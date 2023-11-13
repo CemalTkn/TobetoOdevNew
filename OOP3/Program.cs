@@ -7,20 +7,38 @@ namespace OOP3
     {
         static void Main(string[] args)
         {
+            //IhtiyacKrediManager ihtiyacKrediManager = new IhtiyacKrediManager();
+            //ihtiyacKrediManager.Hesapla();
+
+            //TasitKrediManager tasitKrediManager = new TasitKrediManager();
+            //tasitKrediManager.Hesapla();
+
+            //KonutKrediManager konutKrediManager = new KonutKrediManager();
+            //konutKrediManager.Hesapla();
+
             IKrediManager ihtiyacKrediManager = new IhtiyacKrediManager();
+
             IKrediManager tasitKrediManager = new TasitKrediManager();
+
             IKrediManager konutKrediManager = new KonutKrediManager();
 
-            ILoggerService dtabaseLoggerService = new DtabaseLoggerService();
+            ILoggerService databaseLoggerService = new DtabaseLoggerService();
+            ILoggerService fileLoggerService = new FileLoggerService();
+            ILoggerService smsLoggerService = new SmsLoggerService();
 
-           
+            List<ILoggerService> loggers = new List<ILoggerService> {
+            new SmsLoggerService(),
+            new FileLoggerService(),
+            };
 
             BasvuruManager basvuruManager = new BasvuruManager();
-            basvuruManager.BasvuruYap(tasitKrediManager, dtabaseLoggerService);
+            //basvuruManager.BasvuruYap(ihtiyacKrediManager,new DatabaseLoggerService());
+            basvuruManager.BasvuruYap(tasitKrediManager, new List<ILoggerService> { new DtabaseLoggerService(), new SmsLoggerService() });
+            basvuruManager.BasvuruYap(new EsnafKrediManager(), loggers);
 
-            List<IKrediManager> krediler = new List<IKrediManager>() { ihtiyacKrediManager, tasitKrediManager };
 
-            //basvuruManager.KrediOnBilgilendirmesiYap(krediler);
+            List<IKrediManager> krediler = new List<IKrediManager>() { ihtiyacKrediManager, tasitKrediManager, new EsnafKrediManager() };
+            basvuruManager.KrediOnBilgilendirmesiYap(krediler);
         }    
     }
 }
